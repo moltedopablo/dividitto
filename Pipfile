@@ -7,6 +7,9 @@ name = "pypi"
 django = "*"
 autopep8 = "*"
 pycodestyle = "2.10.0"
+dj-database-url = "*"
+load-dotenv = "*"
+psycopg2-binary = "*"
 
 [dev-packages]
 
