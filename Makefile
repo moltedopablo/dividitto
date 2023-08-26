@@ -1,8 +1,5 @@
 # Makefile for setting up PostgreSQL container and starting Django app
 
-# Commands
-.PHONY: start_db dev
-
 run:
 	@python app/manage.py runserver 0.0.0.0:8000
 
