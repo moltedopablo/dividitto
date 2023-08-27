@@ -3,8 +3,14 @@
 run:
 	@python app/manage.py runserver 0.0.0.0:8000
 
+make_migrations:
+	@python app/manage.py makemigrations
+
 migrate:
 	@python app/manage.py migrate
+
+createsuperuser:
+	@python app/manage.py createsuperuser
 
 db_configure:
 	@echo "Configuring database..."
@@ -12,6 +18,13 @@ db_configure:
 
 db_start:
 	@echo "Setting up Django app..."
+	@docker-compose -f docker-compose-dev.yml up -d
+
+db_purge:
+	@echo "Deleting Django DB..."
+	@docker-compose -f docker-compose-dev.yml stop db
+	@docker-compose -f docker-compose-dev.yml rm -f db
+	@sudo rm -rf pg_data
 	@docker-compose -f docker-compose-dev.yml up -d
 
 db_ps:

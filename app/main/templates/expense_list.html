@@ -1,0 +1,27 @@
+Expenses count:
+<div id="expenses-count">{{expenses | length}}</div>
+<table id="expense-table">
+  <thead>
+    <tr>
+      <th>Fecha</th>
+      <th>Usuario</th>
+      <th>Desc</th>
+      <th>Valor</th>
+    </tr>
+  </thead>
+  <tbody id="expense-list">
+    {% for expense in expenses %}
+    <tr>
+      <td>{{ expense.date | date:'j/n' }}</td>
+      <td>{{ expense.user }}</td>
+      <td>{{ expense.title }}</td>
+      <td>{{ expense.value | floatformat:0 }}</td>
+    </tr>
+    {% endfor%} 
+    {% if not expenses %}
+    <tr>
+      <td colspan="4">No hay gastos</td>
+    </tr>
+    {% endif %}
+  </tbody>
+</table>

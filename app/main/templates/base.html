@@ -1,0 +1,33 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dividitto</title>
+    <link rel="stylesheet" href="{% static 'water-dark.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'main.css' %}" />
+  </head>
+
+  <body>
+    <h1> 💖 Dividitto</h1>
+    <p>
+      <b>Dividitto</b> es una aplicación que te permite mantener los gastos
+      mensuales hogareños organizados según el
+      <b>ingreso mensual diferenciado</b>
+    </p>
+    {% block content %} {% endblock content %}
+    <script src="{% static 'htmx.min.js' %}"></script>
+    <!-- Adds authentication to htmx calls-->
+    <script>
+      document.body.addEventListener('htmx:configRequest', (event) => {
+        event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}'
+      })
+    </script>
+    <script>
+      //htmx.logAll();
+      htmx.config.useTemplateFragments = true
+    </script>
+  </body>
+</html>

@@ -1,0 +1,17 @@
+@media (min-width: 800px) {
+  #expense-table {
+    width: 100%;
+  }
+  #expense-table th:nth-child(1) {
+    width: 10%;
+  }
+  #expense-table th:nth-child(2) {
+    width: 15%;
+  }
+  #expense-table th:nth-child(3) {
+    width: 65%;
+  }
+  #expense-table th:nth-child(4) {
+    width: 10%;
+  }
+}
