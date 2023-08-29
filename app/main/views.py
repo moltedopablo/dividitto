@@ -64,7 +64,14 @@ def create_expense(request):
     if form.is_valid():
         form.instance.user = User.objects.get(id=request.POST.get('user'))
         expense = form.save()
-        expense.net_value = float(expense.value) * 0.5
+        # Get income percentage for the user, month and year, if not found, use 0.5
+        income = Income.objects.filter(
+            user=expense.user, month=expense.date.month, year=expense.date.year).first()
+        if income:
+            expense.net_value = float(
+                expense.value) * (100 - float(income.percentage)) / 100
+        else:
+            expense.net_value = float(expense.value) * 0.5
         expense.save()
     return render(request, 'expense_list.html', {
         'expenses': Expense.objects.all(),
