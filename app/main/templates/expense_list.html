@@ -1,5 +1,13 @@
-Expenses count:
-<div id="expenses-count">{{expenses | length}}</div>
+{% load mathfilters %}
+<p>
+  {% if net_total < 0 %}
+    ⬇️ Estás <b>abajo</b> por: <span class="danger-text"><b>${{ net_total | abs | floatformat:0 }}</b></span>
+  {% elif net_total > 0 %}
+    ⬆️ Estás <b>arriba</b> por: <span class="success-text"><b>${{ net_total | floatformat:0 }}</b></span>
+  {% else %}
+    <span>🤝 Estamos <b>iguales</b></span>
+  {% endif %}
+</p>
 <table id="expense-table">
   <thead>
     <tr>
@@ -11,17 +19,19 @@ Expenses count:
   </thead>
   <tbody id="expense-list">
     {% for expense in expenses %}
-    <tr>
-      <td>{{ expense.date | date:'j/n' }}</td>
-      <td>{{ expense.user }}</td>
-      <td>{{ expense.title }}</td>
-      <td>{{ expense.value | floatformat:0 }}</td>
-    </tr>
-    {% endfor%} 
+      <tr>
+        <td>{{ expense.date | date:'j/n' }}</td>
+        <td>{{ expense.user }}</td>
+        <td>{{ expense.title }}</td>
+        <td class="{% if user == expense.user %}success{% else %}danger{% endif %}-text">
+          ${{ expense.value | floatformat:0 }}
+        </td>
+      </tr>
+    {% endfor %}
     {% if not expenses %}
-    <tr>
-      <td colspan="4">No hay gastos</td>
-    </tr>
+      <tr>
+        <td colspan="4">No hay gastos</td>
+      </tr>
     {% endif %}
   </tbody>
 </table>

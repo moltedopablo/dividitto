@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+  <h3>🔑 Ingrese para comenzar la sesión</h3>
+  {% if form.errors %}
+    <div class="callout callout-danger">
+      <p>El usuario o contraseña ingresados son incorrectos.</p>
+    </div>
+  {% endif %}
+  {% if next %}
+    {% if user.is_authenticated %}
+      <p>
+        Your account doesn't have access to this page. To proceed, please login with
+        an account that has access.
+      </p>
+    {% else %}
+      <p>Please login to see this page.</p>
+    {% endif %}
+  {% endif %}
+  <form method="post" action="{% url 'login' %}">
+    {% csrf_token %}
+    <input name="username" class="form-control" placeholder="Usuario" />
+    <input name="password" type="password" placeholder="Contraseña" />
+    <input type="hidden" name="next" value="{{ next }}" />
+    <button type="submit" class="btn btn-primary btn-block">Ingresar</button>
+  </form>
+{% endblock content %}

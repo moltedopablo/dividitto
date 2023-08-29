@@ -6,28 +6,30 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dividitto</title>
+    <meta name="description"
+          content="Dividitto es una aplicación que te permite mantener los gastos mensuales hogareños organizados según el ingreso mensual diferenciado" />
+    <meta name="keywords" content="Dividitto, gastos, hogar, ingreso" />
     <link rel="stylesheet" href="{% static 'water-dark.min.css' %}" />
     <link rel="stylesheet" href="{% static 'main.css' %}" />
   </head>
-
   <body>
-    <h1> 💖 Dividitto</h1>
+    <h1>💖 Dividitto</h1>
     <p>
       <b>Dividitto</b> es una aplicación que te permite mantener los gastos
       mensuales hogareños organizados según el
       <b>ingreso mensual diferenciado</b>
     </p>
-    {% block content %} {% endblock content %}
+    {% block content %}
+    {% endblock content %}
     <script src="{% static 'htmx.min.js' %}"></script>
     <!-- Adds authentication to htmx calls-->
     <script>
-      document.body.addEventListener('htmx:configRequest', (event) => {
-        event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}'
-      })
+        document.body.addEventListener('htmx:configRequest', (event) => {
+          event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}'
+        })
     </script>
     <script>
-      //htmx.logAll();
-      htmx.config.useTemplateFragments = true
+        htmx.config.useTemplateFragments = true
     </script>
   </body>
 </html>

@@ -1,0 +1,68 @@
+<div id="income">
+    Mes actual: <b>Agosto</b>
+    <h3>💵 Ingresos:</h3>
+    {% if editing %}
+        <form method="post" hx-post="{% url 'income_edit' %}" hx-target="#income">
+            <input type="hidden" name="month" value="8" />
+            <input type="hidden" name="year" value="2023" />
+            {% if incomes %}
+                {% for income in incomes %}
+                    <label>{{ income.user.username }}</label>
+                    <input autocomplete="off"
+                           min="1"
+                           required
+                           type="number"
+                           name="income-{{ income.user.id }}"
+                           value="{{ income.value }}" />
+                {% endfor %}
+            {% else %}
+                {% for user in users %}
+                    <label>{{ user.username }}</label>
+                    <input autocomplete="off"
+                           min="1"
+                           required
+                           type="number"
+                           name="income-{{ user.id }}"
+                           value="0" />
+                {% endfor %}
+            {% endif %}
+            <button hx-get="{% url 'income' %}" hx-target="#income">❌ Cancelar</button>
+            <button type="submit">💾 Guardar</button>
+        </form>
+    {% else %}
+        {% if not incomes %}
+            <p class="muted-text">
+                ⚠️ <b>NO</b> están cargados los ingresos de este mes.
+            </p>
+        {% endif %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Usuario</th>
+                    <th>Ingresos</th>
+                    <th>%</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if incomes %}
+                    {% for income in incomes %}
+                        <tr>
+                            <td>{{ income.user.username }}</td>
+                            <td>{{ income.value }}</td>
+                            <td>{{ income.percentage | floatformat:1 }}%</td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    {% for user in users %}
+                        <tr>
+                            <td>{{ user.username }}</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                    {% endfor %}
+                {% endif %}
+            </tbody>
+        </table>        
+        <button hx-get="{% url 'income_edit' %}" hx-target="#income">📝 Editar</button>
+    {% endif %}
+</div>
