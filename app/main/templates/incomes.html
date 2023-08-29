@@ -4,9 +4,9 @@
     <br>
     Mes actual: <b>{{ month_name }}</b>
     <p>
-        <button hx-get="{% url 'income' %}?month={{ prev_month }}&year={{ prev_year }}"
+        <button hx-get="{% url 'incomes' %}?month={{ prev_month }}&year={{ prev_year }}"
                 hx-target="#income">⏪ Mes Anterior</button>
-        <button hx-get="{% url 'income' %}?month={{ next_month }}&year={{ next_year }}"
+        <button hx-get="{% url 'incomes' %}?month={{ next_month }}&year={{ next_year }}"
                 hx-target="#income">Mes Próximo ⏩</button>
     </p>
     <h3>💵 Ingresos:</h3>
@@ -35,7 +35,7 @@
                            value="0" />
                 {% endfor %}
             {% endif %}
-            <button hx-get="{% url 'income' %}?month={{ month }}&year={{ year }}"
+            <button hx-get="{% url 'incomes' %}?month={{ month }}&year={{ year }}"
                     hx-target="#income">❌ Cancelar</button>
             <button type="submit">💾 Guardar</button>
         </form>

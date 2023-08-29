@@ -35,14 +35,17 @@
   color: var(--text-muted);
 }
 
-#header {
+#create-expense-form {
+  width: 100%;
   display: flex;
-  flex-direction: column-reverse;
-  gap: 1.5rem;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
-@media (min-width: 600px) {
+
+/* @media (min-width: 600px) {
   #header {
     flex-direction: row;
   }
-}
+} */

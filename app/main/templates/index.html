@@ -1,12 +1,8 @@
 {% extends "base.html" %}
 {% block content %}
-  <div id="header">
-    <div>{% include "expense_create.html" %}</div>
-    <div>
-      <p>{% include "income.html" %}</p>
-    </div>
-  </div>
-  <hr />
-  <h2>💰 Gastos</h2>
-  <div id="expenses">{% include "expense_list.html" %}</div>
+  <p>
+    <button hx-get="{% url 'expenses' %}" hx-target="#content">💰 Gastos</button>
+    <button hx-get="{% url 'incomes' %}" hx-target="#content">💵 Ingresos</button>
+  </p>
+  <div id="content">{% include "expenses.html" %}</div>
 {% endblock content %}

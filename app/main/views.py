@@ -15,6 +15,7 @@ def get_date_params(month, year):
     if year is None:
         year = get_current_month_year()[1]
 
+    (month, year) = (int(month), int(year))
     (prev_month, prev_year) = (month - 1, year) if month > 1 else (12, year - 1)
     (next_month, next_year) = (month + 1, year) if month < 12 else (1, year + 1)
     return {
@@ -37,13 +38,19 @@ def get_net_total(user):
 
 @login_required
 def index(request):
-    date_params = get_date_params(None, None)
     return render(request, 'index.html', {
         'expenses': Expense.objects.all(),
-        'incomes': Income.objects.filter(month=date_params['month'], year=date_params['year']),
         'users': User.objects.all(),
         'net_total': get_net_total(request.user),
-        **date_params
+    })
+
+
+@login_required
+def expenses(request):
+    return render(request, 'expenses.html', {
+        'expenses': Expense.objects.all(),
+        'users': User.objects.all(),
+        'net_total': get_net_total(request.user),
     })
 
 
@@ -62,12 +69,13 @@ def create_expense(request):
 
 
 @login_required
-def income(request):
-    (month, year) = (int(request.GET.get('month')), int(request.GET.get('year')))
-    return render(request, 'income.html', {
+def incomes(request):
+    date_params = get_date_params(
+        request.GET.get('month'), request.GET.get('year'))
+    return render(request, 'incomes.html', {
         'editing': False,
-        'incomes': Income.objects.filter(month=month, year=year),
-        **get_date_params(month, year)
+        'incomes': Income.objects.filter(month=date_params['month'], year=date_params['year']),
+        **date_params
     })
 
 
@@ -87,14 +95,14 @@ def income_edit(request):
                     'percentage': value*100/total_income,
                     'value': value
                 })
-        return render(request, 'income.html', {
+        return render(request, 'incomes.html', {
             'editing': False,
             'incomes': Income.objects.filter(month=month, year=year),
             **get_date_params(month, year)
         })
     else:
         (month, year) = (int(request.GET.get('month')), int(request.GET.get('year')))
-        return render(request, 'income.html', {
+        return render(request, 'incomes.html', {
             'editing': True,
             'users': User.objects.all(),
             'incomes': Income.objects.filter(month=month, year=year),
