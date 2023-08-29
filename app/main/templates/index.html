@@ -4,5 +4,7 @@
     <button hx-get="{% url 'expenses' %}" hx-target="#content">💰 Gastos</button>
     <button hx-get="{% url 'incomes' %}" hx-target="#content">💵 Ingresos</button>
   </p>
-  <div id="content">{% include "expenses.html" %}</div>
+  <div id="content">
+    {% include "expenses.html" %}
+  </div>
 {% endblock content %}

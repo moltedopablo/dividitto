@@ -38,18 +38,22 @@ def get_net_total(user):
 
 @login_required
 def index(request):
+    (month, year) = get_current_month_year()
     return render(request, 'index.html', {
         'expenses': Expense.objects.all(),
         'users': User.objects.all(),
+        'incomes': Income.objects.filter(month=month, year=year),
         'net_total': get_net_total(request.user),
     })
 
 
 @login_required
 def expenses(request):
+    (month, year) = get_current_month_year()
     return render(request, 'expenses.html', {
         'expenses': Expense.objects.all(),
         'users': User.objects.all(),
+        'incomes': Income.objects.filter(month=month, year=year),
         'net_total': get_net_total(request.user),
     })
 
@@ -74,6 +78,7 @@ def incomes(request):
         request.GET.get('month'), request.GET.get('year'))
     return render(request, 'incomes.html', {
         'editing': False,
+        'users': User.objects.all(),
         'incomes': Income.objects.filter(month=date_params['month'], year=date_params['year']),
         **date_params
     })

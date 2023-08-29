@@ -3,4 +3,11 @@
 </div>
 <hr />
 <h2>💰 Gastos</h2>
-<div id="expenses">{% include "expense_list.html" %}</div>
+<div id="expenses">
+    {% if not incomes %}
+        <p class="muted-text">
+            ⚠️ <b>NO</b> están cargados los ingresos de este mes.
+        </p>
+    {% endif %}
+    {% include "expense_list.html" %}
+</div>
