@@ -1,11 +1,19 @@
 <div id="income">
     <h2>📅 Mes</h2>
-    Mes actual: <b>Agosto</b>
+    Año actual: <b>{{ year }}</b>
+    <br>
+    Mes actual: <b>{{ month_name }}</b>
+    <p>
+        <button hx-get="{% url 'income' %}?month={{ prev_month }}&year={{ prev_year }}"
+                hx-target="#income">⏪ Mes Anterior</button>
+        <button hx-get="{% url 'income' %}?month={{ next_month }}&year={{ next_year }}"
+                hx-target="#income">Mes Próximo ⏩</button>
+    </p>
     <h3>💵 Ingresos:</h3>
     {% if editing %}
         <form method="post" hx-post="{% url 'income_edit' %}" hx-target="#income">
-            <input type="hidden" name="month" value="8" />
-            <input type="hidden" name="year" value="2023" />
+            <input type="hidden" name="month" value="{{ month }}" />
+            <input type="hidden" name="year" value="{{ year }}" />
             {% if incomes %}
                 {% for income in incomes %}
                     <label>{{ income.user.username }}</label>
@@ -27,7 +35,8 @@
                            value="0" />
                 {% endfor %}
             {% endif %}
-            <button hx-get="{% url 'income' %}" hx-target="#income">❌ Cancelar</button>
+            <button hx-get="{% url 'income' %}?month={{ month }}&year={{ year }}"
+                    hx-target="#income">❌ Cancelar</button>
             <button type="submit">💾 Guardar</button>
         </form>
     {% else %}
@@ -64,6 +73,7 @@
                 {% endif %}
             </tbody>
         </table>
-        <button hx-get="{% url 'income_edit' %}" hx-target="#income">📝 Editar</button>
+        <button hx-get="{% url 'income_edit' %}?month={{ month }}&year={{ year }}"
+                hx-target="#income">📝 Editar</button>
     {% endif %}
 </div>

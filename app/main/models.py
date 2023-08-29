@@ -30,5 +30,5 @@ class Income(models.Model):
             models.UniqueConstraint(
                 fields=['month', 'year', 'user'], name='income_pk')
         ]
-        ordering = ['-year', '-month', '-id']
+        ordering = ['-year', '-month', '-user']
 
