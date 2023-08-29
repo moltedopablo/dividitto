@@ -41,7 +41,6 @@ def index(request):
     return render(request, 'index.html', {
         'expenses': Expense.objects.all(),
         'incomes': Income.objects.filter(month=date_params['month'], year=date_params['year']),
-        'expenses_count': Expense.objects.count(),
         'users': User.objects.all(),
         'net_total': get_net_total(request.user),
         **date_params
@@ -58,7 +57,6 @@ def create_expense(request):
         expense.save()
     return render(request, 'expense_list.html', {
         'expenses': Expense.objects.all(),
-        'expenses_count': Expense.objects.count(),
         'net_total': get_net_total(request.user),
     })
 
