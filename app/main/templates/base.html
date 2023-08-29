@@ -5,6 +5,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
     <title>Dividitto</title>
     <meta name="description"
           content="Dividitto es una aplicación que te permite mantener los gastos mensuales hogareños organizados según el ingreso mensual diferenciado" />
@@ -28,8 +29,6 @@
           event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}'
         })
     </script>
-    <script>
-        htmx.config.useTemplateFragments = true
-    </script>
+    <script>htmx.config.useTemplateFragments = true</script>
   </body>
 </html>
