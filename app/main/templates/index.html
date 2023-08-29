@@ -1,36 +1,8 @@
 {% extends "base.html" %}
 {% block content %}
   <div id="header">
+    <div>{% include "expense_create.html" %}</div>
     <div>
-      <h2>😎 Nuevo Gasto</h2>
-      <form hx-post="{% url 'create-expense' %}"
-            hx-swap="innerHtml"
-            hx-target="#expenses"
-            method="post">
-        <input required
-               autocomplete="off"
-               type="text"
-               name="title"
-               placeholder="Ingresar descripción" />
-        <input required
-               autocomplete="off"
-               min="1"
-               type="number"
-               name="value"
-               placeholder="Ingresar valor" />
-        <input required
-               type="date"
-               name="date"
-               value='{% now "Y-m-d" %}'
-               placeholder="Ingresar fecha" />
-        <select required name="user">
-          {% for user in users %}<option value="{{ user.id }}">{{ user.username }}</option>{% endfor %}
-        </select>
-        <button type="submit">💾 Guardar</button>
-      </form>
-    </div>
-    <div>
-      <h2>📅 Mes</h2>
       <p>{% include "income.html" %}</p>
     </div>
   </div>
