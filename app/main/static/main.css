@@ -1,4 +1,10 @@
-@media (min-width: 800px) {
+:root {
+  --danger-color: #d55a51;
+  --warning-color: #ffeb3b;
+  --success-color: #77b079;
+}
+
+@media (min-width: 600px) {
   #expense-table {
     width: 100%;
   }
@@ -13,5 +19,30 @@
   }
   #expense-table th:nth-child(4) {
     width: 10%;
+  }
+}
+.danger-text {
+  color: var(--danger-color);
+}
+.warning-text {
+  color: var(--warning-color);
+}
+.success-text {
+  color: var(--success-color);
+}
+
+.muted-text {
+  color: var(--text-muted);
+}
+
+#header {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 1.5rem;
+}
+
+@media (min-width: 600px) {
+  #header {
+    flex-direction: row;
   }
 }
