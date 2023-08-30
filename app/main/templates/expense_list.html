@@ -33,7 +33,7 @@
              hx-swap="outerHTML"
              hx-include="closest tr">📝</a>
           <a hx-post="{% url 'delete_expense' id=expense.id %}"
-             hx-confirm="¿Estás seguro?"
+             hx-confirm="¿Estás seguro que queres borrar el gasto?"
              hx-swap="innerHtml"
              hx-target="#expenses">🗑</a>
         </td>
