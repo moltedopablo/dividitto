@@ -191,3 +191,14 @@ def settle(request):
         'expenses': Expense.objects.all(),
         'net_total': get_net_total(request.user),
     })
+
+
+@login_required
+def search_expenses(request):
+    search_str = request.POST.get('search')
+    expenses = Expense.objects.filter(title__istartswith=search_str)
+
+    return render(request, 'expense_table.html', {
+        'expenses': expenses,
+        'net_total': get_net_total(request.user),
+    })
