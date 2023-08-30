@@ -42,7 +42,6 @@ def get_net_total(user):
 
 def get_expenses_and_page(page):
     expense_list = Expense.objects.all()
-    # Show 10 expenses per page
     paginator = Paginator(expense_list, EXPENSES_PAGE_SIZE)
     page_obj = paginator.get_page(page)
     return (page_obj.object_list, page_obj.next_page_number)
