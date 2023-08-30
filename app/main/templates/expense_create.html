@@ -1,6 +1,6 @@
 <h2>💸 Nuevo Gasto</h2>
 <form id="create-expense-form"
-      hx-post="{% url 'create-expense' %}"
+      hx-post="{% url 'create_expense' %}"
       hx-swap="innerHtml"
       hx-target="#expenses"
       method="post">
@@ -8,13 +8,13 @@
               autocomplete="off"
               type="text"
               name="title"
-              placeholder="Ingresar descripción" />
+              placeholder="Descripción" />
        <input required
               autocomplete="off"
               min="1"
               type="number"
               name="value"
-              placeholder="Ingresar valor" />
+              placeholder="Valor" />
        <select required name="user">
               {% for user in users %}<option value="{{ user.id }}">{{ user.username }}</option>{% endfor %}
        </select>
@@ -22,6 +22,6 @@
               type="date"
               name="date"
               value='{% now "Y-m-d" %}'
-              placeholder="Ingresar fecha" />
-       <button type="submit">💾 Guardar</button>
+              placeholder="Fecha" />
+       <button type="submit">💾</button>
 </form>
