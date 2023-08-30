@@ -97,6 +97,9 @@ def delete_expense(request, id):
 def edit_expense(request, id):
     if request.method == 'POST':
         expense = Expense.objects.get(id=id)
+        if expense.is_settle:
+            raise Exception("Cannot edit a settled expense")
+
         form = ExpenseForm(request.POST or None, instance=expense)
         if form.is_valid():
             form.instance.user = User.objects.get(id=request.POST.get('user'))

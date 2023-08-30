@@ -22,11 +22,13 @@
                     </td>
                 {% endif %}
                 <td>
-                    {% if not expense.settle %}
+                    {% if expense.is_settle == False %}
                         <a hx-get="{% url 'edit_expense' id=expense.id %}"
                            hx-target="closest tr"
                            hx-swap="outerHTML"
                            hx-include="closest tr">📝</a>
+                    {% else %}
+                        <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
                     {% endif %}
                     <a hx-post="{% url 'delete_expense' id=expense.id %}"
                        hx-confirm="¿Estás seguro que queres borrar el gasto?"
