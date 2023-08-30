@@ -91,22 +91,40 @@ def incomes(request):
     })
 
 
+def recalculate_expenses_net_vale(month, year):
+    expenses = Expense.objects.filter(date__month=month, date__year=year)
+    for expense in expenses:
+        income = Income.objects.filter(
+            user=expense.user, month=expense.date.month, year=expense.date.year).first()
+        if income:
+            expense.net_value = float(
+                expense.value) * (100 - float(income.percentage)) / 100
+        else:
+            expense.net_value = float(expense.value) * 0.5
+        expense.save()
+
+
 @login_required
 def income_edit(request):
     if request.method == 'POST':
         (month, year) = (int(request.POST.get('month')), int(request.POST.get('year')))
+
         incomes = {(key.split('-')[1], float(value)) for key,
                    value in request.POST.items() if key.startswith('income-')}
         total_income = sum([float(value) for (_, value) in incomes])
+        
         for (user_id, value) in incomes:
             Income.objects.update_or_create(
-                month=request.POST.get('month'),
-                year=request.POST.get('year'),
+                month=month,
+                year=year,
                 user=User.objects.get(id=user_id),
                 defaults={
                     'percentage': value*100/total_income,
                     'value': value
                 })
+
+        recalculate_expenses_net_vale(month, year)
+
         return render(request, 'incomes.html', {
             'editing': False,
             'incomes': Income.objects.filter(month=month, year=year),
