@@ -18,6 +18,5 @@
        placeholder="Buscar ..."
        hx-post="{% url 'search_expenses' %}"
        hx-trigger="keyup changed delay:500ms, search"
-       hx-target="#expense-table"
-       hx-indicator=".htmx-indicator">
+       hx-target="#expense-table">
 {% include "expense_table.html" %}
