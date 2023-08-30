@@ -16,7 +16,10 @@
               name="value"
               placeholder="Valor" />
        <select required name="user">
-              {% for user in users %}<option value="{{ user.id }}">{{ user.username }}</option>{% endfor %}
+              {% for user in users %}
+                     <option {% if user == request.user %}selected{% endif %}
+                             value="{{ user.id }}">{{ user.username }}</option>
+              {% endfor %}
        </select>
        <input required
               type="date"
