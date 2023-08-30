@@ -7,7 +7,8 @@ class Expense(models.Model):
     date = models.DateField()
     title = models.CharField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    value = models.FloatField(validators=[MinValueValidator(0.1)])
+    value = models.FloatField(validators=[MinValueValidator(0.1)], blank=True, null=True)
+    is_settle = models.BooleanField(default=False)
     net_value = models.FloatField(
         validators=[MinValueValidator(0.1)], blank=True, null=True)
 

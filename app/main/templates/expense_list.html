@@ -8,6 +8,10 @@
     <span>🥳 Estamos <b>iguales</b></span>
   {% endif %}
 </p>
+<button hx-post="{% url 'settle' %}"
+        hx-swap="innerHtml"
+        hx-target="#expenses"
+        method="post">💵 Saldar</button>
 <table id="expense-table">
   <thead>
     <tr>
@@ -24,14 +28,20 @@
         <td>{{ expense.date | date:'j/n' }}</td>
         <td>{{ expense.user }}</td>
         <td>{{ expense.title }}</td>
-        <td class="{% if user == expense.user %}success{% else %}danger{% endif %}-text">
-          ${{ expense.value | floatformat:0 }}
-        </td>
+        {% if not expense.value %}
+          <td>${{ expense.net_value | floatformat:0 }}</td>
+        {% else %}
+          <td class="{% if user == expense.user %}success{% else %}danger{% endif %}-text">
+            ${{ expense.value | floatformat:0 }}
+          </td>
+        {% endif %}
         <td>
-          <a hx-get="{% url 'edit_expense' id=expense.id %}"
-             hx-target="closest tr"
-             hx-swap="outerHTML"
-             hx-include="closest tr">📝</a>
+          {% if not expense.settle %}
+            <a hx-get="{% url 'edit_expense' id=expense.id %}"
+               hx-target="closest tr"
+               hx-swap="outerHTML"
+               hx-include="closest tr">📝</a>
+          {% endif %}
           <a hx-post="{% url 'delete_expense' id=expense.id %}"
              hx-confirm="¿Estás seguro que queres borrar el gasto?"
              hx-swap="innerHtml"

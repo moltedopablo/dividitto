@@ -1,3 +1,4 @@
+import datetime
 from django.shortcuts import render
 
 from .forms import ExpenseForm
@@ -166,3 +167,27 @@ def edit_income(request):
             'incomes': Income.objects.filter(month=month, year=year),
             **get_date_params(month, year)
         })
+
+
+@login_required
+def settle(request):
+    net_total = get_net_total(request.user)
+    if net_total < 0:
+        user = request.user
+    elif net_total > 0:
+        user = User.objects.exclude(id=request.user.id).first()
+    else:
+        raise Exception("Cannot settle if net total is 0")
+
+    Expense.objects.create(
+        title="💵 Saldado",
+        value=None,
+        net_value=abs(net_total),
+        user=user,
+        is_settle=True,
+        date=datetime.datetime.now())
+
+    return render(request, 'expense_list.html', {
+        'expenses': Expense.objects.all(),
+        'net_total': get_net_total(request.user),
+    })
