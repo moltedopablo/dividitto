@@ -11,7 +11,10 @@
                    name="date"
                    value="{{ expense.date | date:'Y-m-d' }}">
             <select required name="user" value="{{ expense.user.id }}">
-                {% for user in users %}<option value="{{ user.id }}">{{ user.username }}</option>{% endfor %}
+                {% for user in users %}
+                    <option {% if user == expense.user %}selected{% endif %}
+                            value="{{ user.id }}">{{ user.username }}</option>
+                {% endfor %}
             </select>
             <input required
                    autocomplete="off"
