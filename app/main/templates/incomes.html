@@ -1,8 +1,8 @@
 <div id="income">
     <h2>📅 Mes</h2>
-    Año actual: <b>{{ year }}</b>
+    Año: <b>{{ year }}</b>
     <br>
-    Mes actual: <b>{{ month_name }}</b>
+    Mes: <b>{{ month_name }}</b>
     <p>
         <button hx-get="{% url 'incomes' %}?month={{ prev_month }}&year={{ prev_year }}"
                 hx-target="#income">⏪ Mes Anterior</button>
