@@ -21,22 +21,22 @@ db_configure:
 
 db_start:
 	@echo "Setting up Django app..."
-	docker compose docker-compose-dev.yml up -d
+	docker compose -f docker-compose-dev.yml up -d
 
 db_purge:
 	@echo "Deleting Django DB..."
-	docker compose docker-compose-dev.yml stop db
-	docker compose docker-compose-dev.yml rm -f db
+	docker compose -f docker-compose-dev.yml stop db
+	docker compose -f docker-compose-dev.yml rm -f db
 	sudo rm -rf pg_data
-	docker compose docker-compose-dev.yml up -d
+	docker compose -f docker-compose-dev.yml up -d
 
 db_ps:
 	@echo "Setting up Django app..."
-	docker compose docker-compose-dev.yml ps
+	docker compose -f docker-compose-dev.yml ps
 
 db_logs:
 	@echo "Setting up Django app..."
-	docker compose docker-compose-dev.yml logs --tail=100 -f db
+	docker compose -f docker-compose-dev.yml logs --tail=100 -f db
 
 help:
 	@echo "Available targets:"
