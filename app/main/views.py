@@ -199,7 +199,7 @@ def settle(request):
 @login_required
 def search_expenses(request):
     search_str = request.POST.get('search')
-    expenses = Expense.objects.filter(title__istartswith=search_str)
+    expenses = Expense.objects.filter(title__icontains=search_str)
 
     return render(request, 'expense_table.html', {
         'expenses': expenses,
