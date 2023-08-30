@@ -58,25 +58,59 @@ def expenses(request):
     })
 
 
+def set_expense_net_value(expense):
+    income = Income.objects.filter(
+        user=expense.user, month=expense.date.month, year=expense.date.year).first()
+    if income:
+        expense.net_value = float(
+            expense.value) * (100 - float(income.percentage)) / 100
+    else:
+        expense.net_value = float(expense.value) * 0.5
+    expense.save()
+
+
 @login_required
 def create_expense(request):
     form = ExpenseForm(request.POST or None)
     if form.is_valid():
         form.instance.user = User.objects.get(id=request.POST.get('user'))
         expense = form.save()
-        # Get income percentage for the user, month and year, if not found, use 0.5
-        income = Income.objects.filter(
-            user=expense.user, month=expense.date.month, year=expense.date.year).first()
-        if income:
-            expense.net_value = float(
-                expense.value) * (100 - float(income.percentage)) / 100
-        else:
-            expense.net_value = float(expense.value) * 0.5
-        expense.save()
+        set_expense_net_value(expense)
     return render(request, 'expense_list.html', {
         'expenses': Expense.objects.all(),
         'net_total': get_net_total(request.user),
     })
+
+
+@login_required
+def delete_expense(request, id):
+    expense = Expense.objects.get(id=id)
+    expense.delete()
+    return render(request, 'expense_list.html', {
+        'expenses': Expense.objects.all(),
+        'net_total': get_net_total(request.user),
+    })
+
+
+@login_required
+def edit_expense(request, id):
+    if request.method == 'POST':
+        expense = Expense.objects.get(id=id)
+        form = ExpenseForm(request.POST or None, instance=expense)
+        if form.is_valid():
+            form.instance.user = User.objects.get(id=request.POST.get('user'))
+            expense = form.save()
+            set_expense_net_value(expense)
+        return render(request, 'expense_list.html', {
+            'expenses': Expense.objects.all(),
+            'net_total': get_net_total(request.user),
+        })
+    else:
+        expense = Expense.objects.get(id=id)
+        return render(request, 'expense_edit.html', {
+            'users': User.objects.all(),
+            'expense': expense,
+        })
 
 
 @login_required
@@ -94,25 +128,19 @@ def incomes(request):
 def recalculate_expenses_net_vale(month, year):
     expenses = Expense.objects.filter(date__month=month, date__year=year)
     for expense in expenses:
-        income = Income.objects.filter(
-            user=expense.user, month=expense.date.month, year=expense.date.year).first()
-        if income:
-            expense.net_value = float(
-                expense.value) * (100 - float(income.percentage)) / 100
-        else:
-            expense.net_value = float(expense.value) * 0.5
+        set_expense_net_value(expense)
         expense.save()
 
 
 @login_required
-def income_edit(request):
+def edit_income(request):
     if request.method == 'POST':
         (month, year) = (int(request.POST.get('month')), int(request.POST.get('year')))
 
         incomes = {(key.split('-')[1], float(value)) for key,
                    value in request.POST.items() if key.startswith('income-')}
         total_income = sum([float(value) for (_, value) in incomes])
-        
+
         for (user_id, value) in incomes:
             Income.objects.update_or_create(
                 month=month,

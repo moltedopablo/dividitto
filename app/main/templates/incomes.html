@@ -11,7 +11,7 @@
     </p>
     <h3>💵 Ingresos:</h3>
     {% if editing %}
-        <form method="post" hx-post="{% url 'income_edit' %}" hx-target="#income">
+        <form method="post" hx-post="{% url 'edit_income' %}" hx-target="#income">
             <input type="hidden" name="month" value="{{ month }}" />
             <input type="hidden" name="year" value="{{ year }}" />
             {% if incomes %}
@@ -68,7 +68,7 @@
                 {% endif %}
             </tbody>
         </table>
-        <button hx-get="{% url 'income_edit' %}?month={{ month }}&year={{ year }}"
+        <button hx-get="{% url 'edit_income' %}?month={{ month }}&year={{ year }}"
                 hx-target="#income">📝 Editar</button>
     {% endif %}
 </div>

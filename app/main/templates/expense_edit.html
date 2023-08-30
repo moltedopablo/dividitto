@@ -1,0 +1,32 @@
+<tr>
+    <td class="expense-edit-td" td colspan="5">
+        <form class="expense-edit-form"
+              hx-post="{% url 'edit_expense' id=expense.id %}"
+              hx-swap="innerHtml"
+              hx-target="#expenses"
+              method="post">
+            <input required
+                   placeholder="Fecha"
+                   type="date"
+                   name="date"
+                   value="{{ expense.date | date:'Y-m-d' }}">
+            <select required name="user" value="{{ expense.user.id }}">
+                {% for user in users %}<option value="{{ user.id }}">{{ user.username }}</option>{% endfor %}
+            </select>
+            <input required
+                   autocomplete="off"
+                   type="text"
+                   name="title"
+                   placeholder="Descripción"
+                   value="{{ expense.title }}">
+            <input required
+                   autocomplete="off"
+                   min="1"
+                   type="number"
+                   name="value"
+                   placeholder="Valor"
+                   value="{{ expense.value | floatformat:0 }}">
+            <button type="submit">💾</button>
+        </form>
+    </td>
+</tr>

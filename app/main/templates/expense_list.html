@@ -15,6 +15,7 @@
       <th>Usuario</th>
       <th>Desc</th>
       <th>Valor</th>
+      <th>Acc</th>
     </tr>
   </thead>
   <tbody id="expense-list">
@@ -25,6 +26,16 @@
         <td>{{ expense.title }}</td>
         <td class="{% if user == expense.user %}success{% else %}danger{% endif %}-text">
           ${{ expense.value | floatformat:0 }}
+        </td>
+        <td>
+          <a hx-get="{% url 'edit_expense' id=expense.id %}"
+             hx-target="closest tr"
+             hx-swap="outerHTML"
+             hx-include="closest tr">📝</a>
+          <a hx-post="{% url 'delete_expense' id=expense.id %}"
+             hx-confirm="¿Estás seguro?"
+             hx-swap="innerHtml"
+             hx-target="#expenses">🗑</a>
         </td>
       </tr>
     {% endfor %}

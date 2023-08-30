@@ -2,6 +2,18 @@
   --danger-color: #d55a51;
   --warning-color: #ffeb3b;
   --success-color: #77b079;
+  --dark-focus: #0d1317;
+}
+
+input[type='number'] {
+  max-width: 6rem;
+}
+
+a {
+  cursor: pointer;
+}
+a:hover {
+  text-decoration: none;
 }
 
 @media (min-width: 600px) {
@@ -15,10 +27,19 @@
     width: 15%;
   }
   #expense-table th:nth-child(3) {
-    width: 65%;
+    width: 50%;
   }
   #expense-table th:nth-child(4) {
+    width: 15%;
+  }
+  #expense-table th:nth-child(5) {
     width: 10%;
+  }
+}
+
+@media (min-width: 600px) {
+  .expense-edit-row th {
+    width: auto;
   }
 }
 .danger-text {
@@ -35,10 +56,19 @@
   color: var(--text-muted);
 }
 
-#create-expense-form {
+#create-expense-form,
+.expense-edit-form {
   width: 100%;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   gap: 1rem;
+}
+
+.expense-edit-td {
+  background-color: var(--dark-focus);
+}
+
+.expense-edit-td button {
+  background-color: var(--background-alt);
 }
