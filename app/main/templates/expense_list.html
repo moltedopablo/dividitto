@@ -1,11 +1,11 @@
 {% load mathfilters %}
 <p>
   {% if net_total < 0 %}
-    ⬇️ Estás <b>abajo</b> por: <span class="danger-text"><b>${{ net_total | abs | floatformat:0 }}</b></span>
+    🔽 Estás <b>abajo</b> por: <span class="danger-text"><b>${{ net_total | abs | floatformat:0 }}</b></span>
   {% elif net_total > 0 %}
-    ⬆️ Estás <b>arriba</b> por: <span class="success-text"><b>${{ net_total | floatformat:0 }}</b></span>
+    🔼 Estás <b>arriba</b> por: <span class="success-text"><b>${{ net_total | floatformat:0 }}</b></span>
   {% else %}
-    <span>🤝 Estamos <b>iguales</b></span>
+    <span>🥳 Estamos <b>iguales</b></span>
   {% endif %}
 </p>
 <table id="expense-table">
