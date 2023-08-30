@@ -8,6 +8,9 @@ from django.contrib.auth.models import User
 from django.db.models import Sum
 from django.db.models.functions import Coalesce
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
+
+EXPENSES_PAGE_SIZE = 30
 
 
 def get_date_params(month, year):
@@ -37,11 +40,21 @@ def get_net_total(user):
     return float(total_positive) - float(total_negative)
 
 
+def get_expenses_and_page(page):
+    expense_list = Expense.objects.all()
+    # Show 10 expenses per page
+    paginator = Paginator(expense_list, EXPENSES_PAGE_SIZE)
+    page_obj = paginator.get_page(page)
+    return (page_obj.object_list, page_obj.next_page_number)
+
+
 @login_required
 def index(request):
     (month, year) = get_current_month_year()
+    (expenses, page) = get_expenses_and_page(1)
     return render(request, 'index.html', {
-        'expenses': Expense.objects.all(),
+        'expenses': expenses,
+        'page': page,
         'users': User.objects.all(),
         'incomes': Income.objects.filter(month=month, year=year),
         'net_total': get_net_total(request.user),
@@ -51,10 +64,22 @@ def index(request):
 @login_required
 def expenses(request):
     (month, year) = get_current_month_year()
+    (expenses, page) = get_expenses_and_page(1)
     return render(request, 'expenses.html', {
-        'expenses': Expense.objects.all(),
+        'expenses': expenses,
+        'page': page,
         'users': User.objects.all(),
         'incomes': Income.objects.filter(month=month, year=year),
+        'net_total': get_net_total(request.user),
+    })
+
+
+def expenses_page(request, page):
+    (expenses, page) = get_expenses_and_page(page)
+    return render(request, 'expense_rows.html', {
+        'expenses': expenses,
+        'page': page,
+        'users': User.objects.all(),
         'net_total': get_net_total(request.user),
     })
 

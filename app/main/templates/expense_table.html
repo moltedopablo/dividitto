@@ -9,34 +9,7 @@
         </tr>
     </thead>
     <tbody id="expense-list">
-        {% for expense in expenses %}
-            <tr>
-                <td>{{ expense.date | date:'j/n' }}</td>
-                <td>{{ expense.user }}</td>
-                <td>{{ expense.title }}</td>
-                {% if not expense.value %}
-                    <td>${{ expense.net_value | floatformat:0 }}</td>
-                {% else %}
-                    <td class="{% if user == expense.user %}success{% else %}danger{% endif %}-text">
-                        ${{ expense.value | floatformat:0 }}
-                    </td>
-                {% endif %}
-                <td>
-                    {% if expense.is_settle == False %}
-                        <a hx-get="{% url 'edit_expense' id=expense.id %}"
-                           hx-target="closest tr"
-                           hx-swap="outerHTML"
-                           hx-include="closest tr">📝</a>
-                    {% else %}
-                        <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                    {% endif %}
-                    <a hx-post="{% url 'delete_expense' id=expense.id %}"
-                       hx-confirm="¿Estás seguro que queres borrar el gasto?"
-                       hx-swap="innerHtml"
-                       hx-target="#expenses">🗑</a>
-                </td>
-            </tr>
-        {% endfor %}
+        {% include "expense_rows.html" %}
         {% if not expenses %}
             <tr>
                 <td colspan="4">👻 No se encontraron gastos</td>

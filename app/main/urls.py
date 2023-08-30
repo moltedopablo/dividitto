@@ -11,5 +11,6 @@ urlpatterns = [
     path('expenses/edit/<int:id>', edit_expense, name='edit_expense'),
     path('expenses/delete/<int:id>', delete_expense, name='delete_expense'),
     path('expenses/search', search_expenses, name='search_expenses'),
+    path('expenses/page/<int:page>', expenses_page, name='expenses_page'),
     path('settle', settle, name='settle'),
 ]
