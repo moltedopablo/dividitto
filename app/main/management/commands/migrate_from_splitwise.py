@@ -34,13 +34,13 @@ class Command(BaseCommand):
             csv_reader = csv.reader(csv_file, delimiter=',')
             for row in csv_reader:
                 date = datetime.strptime(row[0], '%Y-%m-%d')
-                title = row[1]
-                int_value = float(row[3])
                 is_payment = True if row[2] == 'Payment' else False
+                title = '💵 Saldado' if is_payment else row[1]
+                int_value = float(row[3])
                 value = None if is_payment else int_value
                 is_settle = True if is_payment else False
                 net_value = int_value if is_payment else int_value * 0.5
-                if (float(row[5]) < 0):
+                if (float(row[5]) > 0):
                     user = User.objects.get(username=options['user_1'])
                 else:
                     user = User.objects.get(username=options['user_2'])
