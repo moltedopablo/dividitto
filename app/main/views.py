@@ -223,9 +223,10 @@ def settle(request):
         user=user,
         is_settle=True,
         date=datetime.datetime.now())
-
+    
+    (expenses, page) = get_expenses_and_page(1)
     return render(request, 'expense_list.html', {
-        'expenses': Expense.objects.all(),
+        'expenses': expenses,
         'net_total': get_net_total(request.user),
     })
 
