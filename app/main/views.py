@@ -101,8 +101,10 @@ def create_expense(request):
         form.instance.user = User.objects.get(id=request.POST.get('user'))
         expense = form.save()
         set_expense_net_value(expense)
+    (expenses, page) = get_expenses_and_page(1)
     return render(request, 'expense_list.html', {
-        'expenses': Expense.objects.all(),
+        'expenses': expenses,
+        'page': page,
         'net_total': get_net_total(request.user),
     })
 
@@ -111,8 +113,10 @@ def create_expense(request):
 def delete_expense(request, id):
     expense = Expense.objects.get(id=id)
     expense.delete()
+    (expenses, page) = get_expenses_and_page(1)
     return render(request, 'expense_list.html', {
-        'expenses': Expense.objects.all(),
+        'expenses': expenses,
+        'page': page,
         'net_total': get_net_total(request.user),
     })
 
@@ -129,8 +133,11 @@ def edit_expense(request, id):
             form.instance.user = User.objects.get(id=request.POST.get('user'))
             expense = form.save()
             set_expense_net_value(expense)
+        
+        (expenses, page) = get_expenses_and_page(1)
         return render(request, 'expense_list.html', {
-            'expenses': Expense.objects.all(),
+            'expenses': expenses,
+            'page': page,
             'net_total': get_net_total(request.user),
         })
     else:
