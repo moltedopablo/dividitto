@@ -227,6 +227,7 @@ def settle(request):
     (expenses, page) = get_expenses_and_page(1)
     return render(request, 'expense_list.html', {
         'expenses': expenses,
+        'page': page,
         'net_total': get_net_total(request.user),
     })
 
