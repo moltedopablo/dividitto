@@ -3,7 +3,7 @@ from django.shortcuts import render
 
 from .forms import ExpenseForm
 from .models import Expense, Income
-from .utils import get_month_name, get_current_month_year
+from .utils import get_current_month_year, get_date_params
 from django.contrib.auth.models import User
 from django.db.models import Sum
 from django.db.models.functions import Coalesce
@@ -12,25 +12,6 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 
 EXPENSES_PAGE_SIZE = 30
-
-
-def get_date_params(month, year):
-    if month is None:
-        month = get_current_month_year()[0]
-    if year is None:
-        year = get_current_month_year()[1]
-
-    (month, year) = (int(month), int(year))
-    (prev_month, prev_year) = (month - 1, year) if month > 1 else (12, year - 1)
-    (next_month, next_year) = (month + 1, year) if month < 12 else (1, year + 1)
-    return {
-        'month': month,
-        'year': year,
-        'month_name': get_month_name(month),
-        'prev_month': prev_month,
-        'prev_year': prev_year,
-        'next_month': next_month,
-        'next_year': next_year, }
 
 
 def get_net_total(user):
@@ -79,7 +60,6 @@ def expenses_page(request, page):
     return render(request, 'expense_rows.html', {
         'expenses': expenses,
         'page': page,
-        'users': User.objects.all(),
         'net_total': get_net_total(request.user),
     })
 
@@ -223,7 +203,7 @@ def settle(request):
         user=user,
         is_settle=True,
         date=datetime.datetime.now())
-    
+
     (expenses, page) = get_expenses_and_page(1)
     return render(request, 'expense_list.html', {
         'expenses': expenses,
