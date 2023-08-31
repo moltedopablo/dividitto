@@ -28,10 +28,11 @@ if os.path.isfile(dotenv_file):
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-^3l_m71wloh!wcq=zeebqzr^p4))srr*d&7(@#pu#e&&%h2r=_'
+SECRET_KEY = os.getenv(
+    'SECRET_KEY', 'django-insecure-^3l_m71wloh!wcq=zeebqzr^p4))srr*d&7(@#pu#e&&%h2r=_')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = True if (os.getenv('DEBUG', 1) == 1) else False
 
 ALLOWED_HOSTS = ['localhost', '192.168.0.12']
 
@@ -118,7 +119,8 @@ USE_THOUSAND_SEPARATOR = False
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
@@ -128,6 +130,25 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Redirect to home URL after login
 LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = '/login'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    "formatters": {
+        "verbose": {
+            "format": "[{asctime}] {levelname}: {name}.{message}",
+            "style": "{",
+        },
+    },
+
+    'handlers': {
+         "console": {'level': 'ERROR', "class": "logging.StreamHandler", "formatter": "verbose"},
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "ERROR",
+    },
+}
 
 # Uncomment to debug SQL Queries
 # LOGGING = {
