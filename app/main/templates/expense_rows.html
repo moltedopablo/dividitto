@@ -1,6 +1,6 @@
 {% for expense in expenses %}
     <tr {% if page and forloop.last %} hx-get="{% url 'expenses_page' page=page %}" hx-trigger="revealed" hx-swap="afterend" {% endif %}>
-        <td>{{ expense.date | date:'j/n' }}</td>
+        <td>{{ expense.date | date:'d/m/y' }}</td>
         <td>{{ expense.user }}</td>
         <td>{{ expense.title }}</td>
         {% if not expense.value %}

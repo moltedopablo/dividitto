@@ -21,10 +21,10 @@ a:hover {
     width: 100%;
   }
   #expense-table th:nth-child(1) {
-    width: 10%;
+    width: 12%;
   }
   #expense-table th:nth-child(2) {
-    width: 15%;
+    width: 13%;
   }
   #expense-table th:nth-child(3) {
     width: 50%;
