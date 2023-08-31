@@ -7,6 +7,7 @@ from .utils import get_month_name, get_current_month_year
 from django.contrib.auth.models import User
 from django.db.models import Sum
 from django.db.models.functions import Coalesce
+from django.db import transaction
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 
@@ -133,7 +134,7 @@ def edit_expense(request, id):
             form.instance.user = User.objects.get(id=request.POST.get('user'))
             expense = form.save()
             set_expense_net_value(expense)
-        
+
         (expenses, page) = get_expenses_and_page(1)
         return render(request, 'expense_list.html', {
             'expenses': expenses,
@@ -162,9 +163,11 @@ def incomes(request):
 
 def recalculate_expenses_net_vale(month, year):
     expenses = Expense.objects.filter(date__month=month, date__year=year)
-    for expense in expenses:
-        set_expense_net_value(expense)
-        expense.save()
+    with transaction.atomic():
+        for expense in expenses:
+            if not expense.is_settle:
+                set_expense_net_value(expense)
+                expense.save()
 
 
 @login_required
