@@ -22,4 +22,4 @@ WORKDIR /app
 RUN python manage.py collectstatic --no-input
 
 EXPOSE 80
-CMD uwsgi --http "0.0.0.0:80" --module app.wsgi:application --master --processes 4 --threads 2
+CMD uwsgi --http "0.0.0.0:80" --module app.wsgi:application --master --processes 4 --threads 2 --static-map /static=/app/staticfiles
