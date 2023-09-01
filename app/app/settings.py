@@ -175,7 +175,7 @@ LOGGING = {
 # }
 
 
-WA_APP_NAME = 'Dividitto'
+PWA_APP_NAME = 'Dividitto'
 PWA_APP_DESCRIPTION = "Dividí tus gastos!"
 PWA_APP_THEME_COLOR = '#231f26'
 PWA_APP_BACKGROUND_COLOR = '#202b38'
