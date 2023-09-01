@@ -12,6 +12,7 @@ load-dotenv = "*"
 psycopg2-binary = "*"
 djlint = "*"
 django-mathfilters = "*"
+django-pwa = "*"
 
 [dev-packages]
 

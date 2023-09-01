@@ -1,4 +1,5 @@
 {% load static %}
+{% load pwa %}
 <!DOCTYPE html>
 <html lang="es">
   <head>
@@ -12,6 +13,7 @@
     <meta name="keywords" content="Dividitto, gastos, hogar, ingreso" />
     <link rel="stylesheet" href="{% static 'water-dark.min.css' %}" />
     <link rel="stylesheet" href="{% static 'main.css' %}" />
+    {% progressive_web_app_meta %}
   </head>
   <body>
     <h1>💖 Dividitto</h1>

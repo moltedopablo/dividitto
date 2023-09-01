@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'mathfilters',
+    'pwa',
     'main'
 ]
 
@@ -172,3 +173,33 @@ LOGGING = {
 #         }
 #     }
 # }
+
+
+WA_APP_NAME = 'Dividitto'
+PWA_APP_DESCRIPTION = "Dividí tus gastos!"
+PWA_APP_THEME_COLOR = '#231f26'
+PWA_APP_BACKGROUND_COLOR = '#202b38'
+PWA_APP_DISPLAY = 'standalone'
+PWA_APP_SCOPE = '/'
+PWA_APP_ORIENTATION = 'portrait'
+PWA_APP_START_URL = '/'
+PWA_APP_STATUS_BAR_COLOR = 'default'
+PWA_APP_ICONS = [
+    {
+        'src': '/static/images/dividitto_icon.png',
+        'sizes': '160x160'
+    }
+]
+PWA_APP_ICONS_APPLE = [
+    {
+        'src': '/static/images/dividitto_icon.png',
+        'sizes': '160x160'
+    }
+]
+PWA_APP_SPLASH_SCREEN = [
+    {
+        'src': '/static/images/dividitto_splas.png',
+        'media': '(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)'
+    }
+]
+PWA_APP_LANG = 'es-AR'
