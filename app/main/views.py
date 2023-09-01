@@ -11,101 +11,92 @@ from django.db import transaction
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+from django.views.generic import TemplateView
+
 EXPENSES_PAGE_SIZE = 30
 
 
-def get_net_total(user):
-    total_positive = Expense.objects.filter(user=user).aggregate(
-        total_amount=Coalesce(Sum('net_value'), 0.0))['total_amount']
-    total_negative = Expense.objects.exclude(
-        user=user).aggregate(total_amount=Coalesce(Sum('net_value'), 0.0))['total_amount']
-    return float(total_positive) - float(total_negative)
+@method_decorator(login_required, name="dispatch")
+class ExpenseView(TemplateView):
+    template_name = "index.html"
+
+    def get_expenses_and_page(self, page):
+        expense_list = Expense.objects.select_related('user').all()
+        paginator = Paginator(expense_list, EXPENSES_PAGE_SIZE)
+        page_obj = paginator.get_page(page)
+        return (page_obj.object_list, page_obj.next_page_number)
+
+    def get_net_total(self):
+        user = self.request.user
+        total_positive = Expense.objects.filter(
+            user=user).aggregate(sum=Coalesce(Sum('net_value'), 0.0))
+        total_negative = Expense.objects.exclude(
+            user=user).aggregate(sum=Coalesce(Sum('net_value'), 0.0))
+        return float(total_positive['sum']) - float(total_negative['sum'])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        (expenses, page) = self.get_expenses_and_page(1)
+        context['expenses'] = expenses
+        context['page'] = page
+        context['net_total'] = self.get_net_total()
+
+        return context
 
 
-def get_expenses_and_page(page):
-    expense_list = Expense.objects.select_related('user').all()
-    paginator = Paginator(expense_list, EXPENSES_PAGE_SIZE)
-    page_obj = paginator.get_page(page)
-    return (page_obj.object_list, page_obj.next_page_number)
+class ExpenseListView(ExpenseView):
+    template_name = "expenses.html"
+
+    def get_context_data(self, **kwargs):
+        (month, year) = get_current_month_year()
+        context = super().get_context_data(**kwargs)
+        context['users'] = User.objects.all()
+        context['incomes'] = Income.objects.filter(month=month, year=year)
+
+        return context
 
 
-@login_required
-def index(request):
-    (month, year) = get_current_month_year()
-    (expenses, page) = get_expenses_and_page(1)
-    return render(request, 'index.html', {
-        'expenses': expenses,
-        'page': page,
-        'users': User.objects.all(),
-        'incomes': Income.objects.filter(month=month, year=year),
-        'net_total': get_net_total(request.user),
-    })
+class IndexView(ExpenseListView):
+    template_name = "index.html"
 
 
-@login_required
-def expenses(request):
-    (month, year) = get_current_month_year()
-    (expenses, page) = get_expenses_and_page(1)
-    return render(request, 'expenses.html', {
-        'expenses': expenses,
-        'page': page,
-        'users': User.objects.all(),
-        'incomes': Income.objects.filter(month=month, year=year),
-        'net_total': get_net_total(request.user),
-    })
+class ExpenseRowsView(ExpenseView):
+    template_name = "expense_rows.html"
+
+    def get_context_data(self, **kwargs):
+        (expenses, page) = self.get_expenses_and_page(kwargs['page'])
+        return {'expenses': expenses, 'page': page}
 
 
-def expenses_page(request, page):
-    (expenses, page) = get_expenses_and_page(page)
-    return render(request, 'expense_rows.html', {
-        'expenses': expenses,
-        'page': page,
-        'net_total': get_net_total(request.user),
-    })
+class CreateExpenseView(ExpenseView):
+    template_name = "expense_list.html"
+
+    def post(self, request, *args, **kwargs):
+        form = ExpenseForm(request.POST or None)
+        if form.is_valid():
+            form.instance.user = User.objects.get(id=request.POST.get('user'))
+            expense = form.save()
+            expense.calculate_net_value()
+            expense.save()
+        return render(request, self.template_name, self.get_context_data())
 
 
-def set_expense_net_value(expense):
-    income = Income.objects.filter(
-        user=expense.user, month=expense.date.month, year=expense.date.year).first()
-    if income:
-        expense.net_value = float(
-            expense.value) * (100 - float(income.percentage)) / 100
-    else:
-        expense.net_value = float(expense.value) * 0.5
-    expense.save()
+class DeleteExpenseView(ExpenseView):
+    template_name = "expense_list.html"
+
+    def post(self, request, *args, **kwargs):
+        expense = Expense.objects.get(id=kwargs['id'])
+        expense.delete()
+        return render(request, self.template_name, self.get_context_data())
 
 
-@login_required
-def create_expense(request):
-    form = ExpenseForm(request.POST or None)
-    if form.is_valid():
-        form.instance.user = User.objects.get(id=request.POST.get('user'))
-        expense = form.save()
-        set_expense_net_value(expense)
-    (expenses, page) = get_expenses_and_page(1)
-    return render(request, 'expense_list.html', {
-        'expenses': expenses,
-        'page': page,
-        'net_total': get_net_total(request.user),
-    })
+class EditExpenseView(ExpenseView):
+    template_name = "expense_edit.html"
 
-
-@login_required
-def delete_expense(request, id):
-    expense = Expense.objects.get(id=id)
-    expense.delete()
-    (expenses, page) = get_expenses_and_page(1)
-    return render(request, 'expense_list.html', {
-        'expenses': expenses,
-        'page': page,
-        'net_total': get_net_total(request.user),
-    })
-
-
-@login_required
-def edit_expense(request, id):
-    if request.method == 'POST':
-        expense = Expense.objects.get(id=id)
+    def post(self, request, *args, **kwargs):
+        expense = Expense.objects.get(id=kwargs['id'])
         if expense.is_settle:
             raise Exception("Cannot edit a settled expense")
 
@@ -113,19 +104,50 @@ def edit_expense(request, id):
         if form.is_valid():
             form.instance.user = User.objects.get(id=request.POST.get('user'))
             expense = form.save()
-            set_expense_net_value(expense)
+            expense.calculate_net_value()
+            expense.save()
+        return render(request, 'expense_list.html', self.get_context_data())
 
-        (expenses, page) = get_expenses_and_page(1)
-        return render(request, 'expense_list.html', {
-            'expenses': expenses,
-            'page': page,
-            'net_total': get_net_total(request.user),
-        })
-    else:
-        expense = Expense.objects.get(id=id)
-        return render(request, 'expense_edit.html', {
+    def get(self, request, *args, **kwargs):
+        expense = Expense.objects.get(id=kwargs['id'])
+        return render(request, self.template_name, {
             'users': User.objects.all(),
             'expense': expense,
+        })
+
+
+class SettleExpenseView(ExpenseView):
+    template_name = "expense_list.html"
+
+    def post(self, request, *args, **kwargs):
+        net_total = self.get_net_total()
+        if net_total < 0:
+            user = request.user
+        elif net_total > 0:
+            user = User.objects.exclude(id=request.user.id).first()
+        else:
+            raise Exception("Cannot settle if net total is 0")
+
+        Expense.objects.create(
+            title="💵 Saldado",
+            value=None,
+            net_value=abs(net_total),
+            user=user,
+            is_settle=True,
+            date=datetime.datetime.now())
+        return render(request, self.template_name, self.get_context_data())
+
+
+class SearchExpenseView(ExpenseView):
+    template_name = "expense_table.html"
+
+    def post(self, request, *args, **kwargs):
+        seach_str = request.POST.get('search')
+        expenses = Expense.objects.filter(title__icontains=seach_str)
+
+        return render(request, self.template_name, {
+            'expenses': expenses,
+            'net_total': self.get_net_total(),
         })
 
 
@@ -146,7 +168,7 @@ def recalculate_expenses_net_vale(month, year):
     with transaction.atomic():
         for expense in expenses:
             if not expense.is_settle:
-                set_expense_net_value(expense)
+                expense.calculate_net_value()
                 expense.save()
 
 
@@ -184,40 +206,3 @@ def edit_income(request):
             'incomes': Income.objects.filter(month=month, year=year),
             **get_date_params(month, year)
         })
-
-
-@login_required
-def settle(request):
-    net_total = get_net_total(request.user)
-    if net_total < 0:
-        user = request.user
-    elif net_total > 0:
-        user = User.objects.exclude(id=request.user.id).first()
-    else:
-        raise Exception("Cannot settle if net total is 0")
-
-    Expense.objects.create(
-        title="💵 Saldado",
-        value=None,
-        net_value=abs(net_total),
-        user=user,
-        is_settle=True,
-        date=datetime.datetime.now())
-
-    (expenses, page) = get_expenses_and_page(1)
-    return render(request, 'expense_list.html', {
-        'expenses': expenses,
-        'page': page,
-        'net_total': get_net_total(request.user),
-    })
-
-
-@login_required
-def search_expenses(request):
-    search_str = request.POST.get('search')
-    expenses = Expense.objects.filter(title__icontains=search_str)
-
-    return render(request, 'expense_table.html', {
-        'expenses': expenses,
-        'net_total': get_net_total(request.user),
-    })
