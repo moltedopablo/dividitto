@@ -30,6 +30,12 @@ Also I wanted to experiment with [HTMX](htmx.org) + [Django](https://www.djangop
 - [ ] Add a way to add more than two people to a group
 - [ ] Add i18n. Right now the app only works in spanish (perdón amigo 🇦🇷)
 
+## 📱 Screenshots
+![image](https://github.com/moltedopablo/dividitto/assets/4377823/ca546685-b7aa-466c-b829-862643829e80)
+![image](https://github.com/moltedopablo/dividitto/assets/4377823/a10e5c20-c089-43e0-add6-296dda061ad5)
+
+
+
 ## 🧰 How to run it
 
 ### Dev
