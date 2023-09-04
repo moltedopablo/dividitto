@@ -21,6 +21,7 @@ Also I wanted to experiment with [HTMX](htmx.org) + [Django](https://www.djangop
 - [x] Edit/Delete expenses
 - [x] Infinite scroll
 - [x] PWA, can be installed on mobile
+- [x] Script to migrate from splitwise
 
 ## 😿 Missing features (TODO)
 - [ ] Add tests
